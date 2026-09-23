@@ -3,25 +3,28 @@ import { Link } from "react-router-dom";
 import ForestBackground from "../components/backgrounds/ForestBackground";
 import MusicCard from "../components/musicCard";
 import Button from "../components/button";
+import PhotoFrame from "../components/photoFrame";
+
+import six from "../assets/6.webp";
 
 // TODO: ganti videoId di bawah dengan ID video YouTube lagu pilihanmu.
 // Cara ambil ID: di URL https://www.youtube.com/watch?v=XXXXXXXXXXX
 // yang dipakai hanya bagian setelah "v=" (11 karakter), yaitu XXXXXXXXXXX.
 const songs = [
   {
-    videoId: "VIDEO_ID_1",
-    title: "Judul Lagu 1",
-    note: "Ceritain kenangan di balik lagu ini di sini",
+    videoId: "__Pb1fO2H2A",
+    title: "Overnight - Kita Lewati Berdua",
+    note: "Kita lewatin semuanya bersama yaa",
   },
   {
-    videoId: "VIDEO_ID_2",
-    title: "Judul Lagu 2",
-    note: "Ceritain kenangan di balik lagu ini di sini",
+    videoId: "7SqNVv98e8Q",
+    title: "Sal Priadi - Kita Usahakan Rumah Itu",
+    note: "Kita usahakan rumah itu",
   },
   {
-    videoId: "VIDEO_ID_3",
-    title: "Judul Lagu 3",
-    note: "Ceritain kenangan di balik lagu ini di sini",
+    videoId: "mJE0ROBWPvY",
+    title: "Raim Laode - Lesung Pipi",
+    note: "Tunggu proses aku yaa",
   },
 ];
 
@@ -47,9 +50,19 @@ export default function Songs() {
 
         <div className="flex w-full max-w-4xl flex-col items-center gap-6 sm:grid sm:grid-cols-2 sm:gap-8">
           {songs.map((song, index) => (
-            <MusicCard key={`${song.videoId}-${index}`} index={index} {...song} />
+            <MusicCard
+              key={`${song.videoId}-${index}`}
+              index={index}
+              {...song}
+            />
           ))}
         </div>
+
+        <PhotoFrame
+          src={six}
+          caption="Together"
+          className="absolute z-5 -top-50 -right-50"
+        />
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

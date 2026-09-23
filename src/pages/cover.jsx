@@ -53,14 +53,14 @@ export default function Cover() {
         <div className="relative mt-4 flex items-start justify-center sm:mt-6">
           <motion.p
             variants={fadeUp}
-            className="pacifico select-none text-[6rem] leading-none text-white/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] sm:text-[9rem] md:text-[12rem]"
+            className="pacifico select-none text-[6rem] leading-none text-white/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] -rotate-5 sm:text-[9rem] md:text-[15rem]"
           >
             20
           </motion.p>
 
           <motion.div
             variants={photoIn}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 sm:-top-14"
+            className="absolute -top-10 left-1/2 -translate-x-1/2 sm:top-5"
           >
             <motion.img
               src={coverPhoto}
