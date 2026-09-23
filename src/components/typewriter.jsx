@@ -2,7 +2,16 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Types `text` out one character at a time, then calls `onComplete` once.
- * Respects prefers-reduced-motion (shows the full text immediately).
+ *
+ * Uses requestAnimationFrame with elapsed-time-based progress (not
+ * setInterval) so it stays smooth and battery-friendly on mobile, and
+ * keeps ticking correctly even if the tab/browser throttles timers.
+ *
+ * Deliberately does NOT special-case prefers-reduced-motion: this
+ * animation is the whole point of the page it's used on, and many phones
+ * report that media query as true (low-power mode, some OEM defaults)
+ * which was previously making the text appear instantly with no typing
+ * effect at all on mobile.
  */
 export default function Typewriter({
   text,
@@ -13,44 +22,41 @@ export default function Typewriter({
   onComplete,
   cursor = true,
 }) {
-  const [shown, setShown] = useState("");
-  const [done, setDone] = useState(false);
+  const [count, setCount] = useState(0);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    setShown("");
-    setDone(false);
+    setCount(0);
+    let rafId;
+    let startTime = null;
+    let firedComplete = false;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) {
-      setShown(text);
-      setDone(true);
-      onCompleteRef.current?.();
-      return undefined;
-    }
-
-    let i = 0;
-    let intervalId;
-    const timeoutId = setTimeout(() => {
-      intervalId = setInterval(() => {
-        i += 1;
-        setShown(text.slice(0, i));
-        if (i >= text.length) {
-          clearInterval(intervalId);
-          setDone(true);
+    const tick = (now) => {
+      if (startTime === null) startTime = now;
+      const elapsed = now - startTime - startDelay;
+      if (elapsed < 0) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      const next = Math.min(text.length, Math.floor(elapsed / speed) + 1);
+      setCount(next);
+      if (next >= text.length) {
+        if (!firedComplete) {
+          firedComplete = true;
           onCompleteRef.current?.();
         }
-      }, speed);
-    }, startDelay);
-
-    return () => {
-      clearTimeout(timeoutId);
-      clearInterval(intervalId);
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
     };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, [text, speed, startDelay]);
+
+  const shown = text.slice(0, count);
+  const done = count >= text.length;
 
   return (
     <Tag className={className}>

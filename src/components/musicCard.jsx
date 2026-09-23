@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "motion/react";
 
 /**
@@ -6,12 +5,22 @@ import { motion } from "motion/react";
  * (so the page doesn't load N heavy iframes up front), and swaps in the
  * real embedded player once the person taps it.
  *
+ * Playback is controlled by the parent (`isPlaying` / `onPlay`) rather
+ * than kept as local state, so the parent can guarantee only one card
+ * plays at a time — see songs.jsx.
+ *
  * videoId: the YouTube video ID only (the part after "v=" in the URL),
  *          e.g. for https://www.youtube.com/watch?v=dQw4w9WgXcQ it's
  *          "dQw4w9WgXcQ".
  */
-export default function MusicCard({ videoId, title, note, index = 0 }) {
-  const [playing, setPlaying] = useState(false);
+export default function MusicCard({
+  videoId,
+  title,
+  note,
+  index = 0,
+  isPlaying = false,
+  onPlay,
+}) {
   const tilt = index % 2 === 0 ? -3 : 3;
   const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
@@ -29,7 +38,7 @@ export default function MusicCard({ videoId, title, note, index = 0 }) {
       className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/50 bg-white/80 shadow-lg backdrop-blur-sm"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-black/10">
-        {playing ? (
+        {isPlaying ? (
           <iframe
             className="h-full w-full"
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
@@ -40,7 +49,7 @@ export default function MusicCard({ videoId, title, note, index = 0 }) {
         ) : (
           <button
             type="button"
-            onClick={() => setPlaying(true)}
+            onClick={() => onPlay?.(index)}
             className="group relative block h-full w-full cursor-pointer"
             aria-label={`Putar ${title}`}
           >
@@ -65,9 +74,9 @@ export default function MusicCard({ videoId, title, note, index = 0 }) {
 
       <div className="flex items-center gap-3 px-4 py-3">
         <motion.span
-          animate={playing ? { rotate: 360 } : { rotate: 0 }}
+          animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
           transition={
-            playing
+            isPlaying
               ? { duration: 3, repeat: Infinity, ease: "linear" }
               : { duration: 0.3 }
           }

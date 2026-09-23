@@ -32,7 +32,7 @@ export default function PhotoFrame({
         src={src}
         alt={alt}
         loading="lazy"
-        className="h-36 w-full rounded-[2px] object-cover sm:h-40"
+        className="aspect-square w-full rounded-[2px] object-cover"
       />
       {caption && (
         <figcaption className="pacifico mt-2 truncate text-center text-sm text-[#3b3550]">

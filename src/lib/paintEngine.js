@@ -684,9 +684,24 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
 
       // Debounced resize: tear the sketch down and remount it so the canvas
       // always matches the container size and the painting replays once.
+      // On mobile, the browser chrome (address bar) hiding/showing while the
+      // page scrolls fires `resize` with only a height change — remounting
+      // the whole WEBGL sketch for that is expensive and pointless, so only
+      // a real width change (or a large height change, e.g. rotation) earns
+      // a remount.
+      let lastW = containerRef.current ? containerRef.current.clientWidth : window.innerWidth;
+      let lastH = containerRef.current ? containerRef.current.clientHeight : window.innerHeight;
       const handleResize = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
+          const el = containerRef.current;
+          const w = el ? el.clientWidth : window.innerWidth;
+          const h = el ? el.clientHeight : window.innerHeight;
+          const widthChanged = Math.abs(w - lastW) > 4;
+          const heightChanged = Math.abs(h - lastH) > 150;
+          if (!widthChanged && !heightChanged) return;
+          lastW = w;
+          lastH = h;
           if (p5Instance) p5Instance.remove();
           p5Instance = null;
           if (!cancelled) mount();
