@@ -70,7 +70,7 @@ export default function Cover() {
                 y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
                 rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" },
               }}
-              className="h-28 w-28 rounded-full border-4 border-white object-cover shadow-xl sm:h-40 sm:w-40 md:h-48 md:w-48"
+              className="h-28 w-28 object-cover sm:h-40 sm:w-40 md:h-48 md:w-48"
             />
           </motion.div>
         </div>

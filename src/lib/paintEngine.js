@@ -35,7 +35,7 @@ let brushesScaled = false;
 // Shared style dials — the tuning every scene was built against. Identical in
 // every background file so the brushwork reads as one hand.
 // -----------------------------------------------------------------------------
-export const S = {
+export const BASE_S = {
   water: 0.55,
   coverage: 0.84,
   density: 0.5,
@@ -48,6 +48,10 @@ export const S = {
   vivid: 0.45,
   flower: 1.8,
 };
+// Kept for backward compatibility — nothing outside this file should read
+// this directly; scenes always get their dials through `helpers.S`, which
+// may be a device-scaled copy of this (see createPaintEngine below).
+export const S = BASE_S;
 
 // The warm "kertas" every scene is painted on.
 export const DEFAULT_PAPER = "#f4eee2";
@@ -247,6 +251,30 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
 
         const sketch = (p) => {
           brush.instance(p);
+
+          // ---- device-aware perf tuning ------------------------------
+          // Phones are the common case here and the reveal-animation +
+          // WEBGL double-buffer technique is not cheap, so scale the whole
+          // scene down rather than just hoping it's fast enough:
+          //  - fewer strokes (density/detail/touch) on narrow screens
+          //  - a shorter one-time reveal so it settles faster
+          //  - a person who has asked their OS for reduced motion gets the
+          //    finished painting immediately instead of the animated reveal
+          const isMobile =
+            typeof window !== "undefined" &&
+            window.matchMedia("(max-width: 640px)").matches;
+          const reduceMotion =
+            typeof window !== "undefined" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const S = isMobile
+            ? {
+                ...BASE_S,
+                density: BASE_S.density * 0.45,
+                detail: BASE_S.detail * 0.55,
+                touch: BASE_S.touch * 0.6,
+              }
+            : BASE_S;
+          const loopMs = isMobile ? Math.min(LOOP_MS, 6000) : LOOP_MS;
 
           let W = 600,
             H = 600,
@@ -539,7 +567,7 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
               s.start = cursor;
               cursor += s.dur + s.gap;
             }
-            const k = LOOP_MS / cursor;
+            const k = loopMs / cursor;
             for (const s of strokes) {
               s.start *= k;
               s.dur *= k;
@@ -610,6 +638,10 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
           }
 
           p.setup = () => {
+            // Retina/high-DPR phones otherwise render at 2-3x the pixel
+            // area for no visible gain on a soft painterly background —
+            // this is the single biggest perf lever for mobile.
+            p.pixelDensity(1);
             sizeToContainer();
             const cnv = p.createCanvas(W, H, p.WEBGL);
             cnv.parent(containerRef.current);
@@ -632,15 +664,16 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
 
           p.draw = () => {
             p.translate(-W / 2, -H / 2);
-            if (freeze !== null) {
-              drawFrame(clamp01(freeze) * LOOP_MS);
+            const effectiveFreeze = freeze !== null ? freeze : reduceMotion ? 1 : null;
+            if (effectiveFreeze !== null) {
+              drawFrame(clamp01(effectiveFreeze) * loopMs);
               p.noLoop();
               return;
             }
             if (startMs === null) startMs = p.millis();
             const now = p.millis() - startMs;
-            drawFrame(Math.min(now, LOOP_MS));
-            if (now >= LOOP_MS) p.noLoop();
+            drawFrame(Math.min(now, loopMs));
+            if (now >= loopMs) p.noLoop();
           };
         };
 
