@@ -23,7 +23,13 @@ export default function PhotoFrame({
     >
       <motion.span
         aria-hidden="true"
-        animate={{ rotate: [rotate > 0 ? 4 : -4, rotate > 0 ? 1 : -1, rotate > 0 ? 4 : -4] }}
+        animate={{
+          rotate: [
+            rotate > 0 ? 4 : -4,
+            rotate > 0 ? 1 : -1,
+            rotate > 0 ? 4 : -4,
+          ],
+        }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         className="absolute -top-3 left-1/2 h-6 w-14 -translate-x-1/2 rounded-[2px] bg-white/70"
         style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }}

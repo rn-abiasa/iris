@@ -5,8 +5,8 @@ import Stack from "../components/stack";
 import ReasonCard from "../components/reasonCard";
 import PhotoFrame from "../components/photoFrame";
 import Button from "../components/button";
-import img4 from "../assets/4.webp";
-import img5 from "../assets/5.webp";
+import img7 from "../assets/briliana.jpg";
+import img5 from "../assets/brln_bag.jpeg";
 
 // TODO: ganti dengan alasan-alasan asli kamu — makin spesifik makin kena.
 const reasons = [
@@ -68,7 +68,7 @@ export default function Reason() {
         </motion.div>
 
         <div className="mt-6 flex flex-row gap-4 sm:mt-4 sm:flex-col">
-          <PhotoFrame src={img4} alt="Kenangan 4" rotate={5} delay={0.5} />
+          <PhotoFrame src={img7} alt="Kenangan 4" rotate={5} delay={0.5} />
           <PhotoFrame
             src={img5}
             alt="Kenangan 5"
