@@ -207,8 +207,9 @@ function buildScene(W, H, m, h) {
   out.push(D(() => { fillStyle(mixHex(G.deep, G.shade, 0.45), 205, 0.3, 0.5, 0.3); brush.polygon(rightSlope); }, bboxOf(rightSlope, 10, W, H), "y", -1, 520, 90));
 
   // --- pines climbing the foreground slopes -------------------------------
-  for (let i = 0; i < 12 + Math.round(dens * 8); i++) {
-    const side = i < (12 + Math.round(dens * 8)) / 2 ? -1 : 1;
+  const PINE_COUNT = 8 + Math.round(dens * 6);
+  for (let i = 0; i < PINE_COUNT; i++) {
+    const side = i < PINE_COUNT / 2 ? -1 : 1;
     const y = H * rr(0.74, 0.98);
     const x = W * 0.5 + side * rr(W * (0.2 + 0.08 * p.random()), W * 0.5);
     const len = -H * rr(0.1, 0.2);

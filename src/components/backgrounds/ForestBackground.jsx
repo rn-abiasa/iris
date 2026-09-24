@@ -97,7 +97,7 @@ function buildScene(W, H, m, h) {
 
   // --- the trunk corridor: verticals crowding the frame, near = big/dark ----
   const trunks = [];
-  for (let i = 0; i < 42 + Math.round(dens * 22); i++) {
+  for (let i = 0; i < 27 + Math.round(dens * 14); i++) {
     const r = p.random();
     let x0;
     if (r < 0.4) x0 = rr(W * 0.02, W * 0.24);

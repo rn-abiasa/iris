@@ -143,7 +143,7 @@ function buildScene(W, H, m, h) {
   out.push(dBlob(W * 0.5, H * 1.04, W * 0.72, H * 0.13, mixHex(G.shade, washes[3], 0.5), 175, 0.5, 0.5, 0, 0.14, 380));
 
   // --- long grass fanning everywhere (no path, no rows) -------------------
-  for (let i = 0; i < Math.round((70 + dens * 90) * (0.4 + 0.6 * det)); i++) {
+  for (let i = 0; i < Math.round((45 + dens * 58) * (0.4 + 0.6 * det)); i++) {
     const t = Math.pow(p.random(), 0.9);
     const y0 = H * (0.2 + 0.8 * t);
     const x0 = rr(W * 0.03, W * 0.97);

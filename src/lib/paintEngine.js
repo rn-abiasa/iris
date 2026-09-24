@@ -233,7 +233,7 @@ export function ensureBrushes(brush, scaleAmt) {
 // of reveal strokes, and plays that list forward exactly once.
 // -----------------------------------------------------------------------------
 
-export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS = 9000 }) {
+export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS = 4800 }) {
   // The returned component takes only presentation props — no `scene` prop,
   // no palette: all of that is baked into the buildScene it was created with.
   return function PaintBackground({ className = "", freeze = null }) {
@@ -274,7 +274,7 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
                 touch: BASE_S.touch * 0.6,
               }
             : BASE_S;
-          const loopMs = isMobile ? Math.min(LOOP_MS, 6000) : LOOP_MS;
+          const loopMs = isMobile ? Math.min(LOOP_MS, 3200) : LOOP_MS;
 
           let W = 600,
             H = 600,
@@ -638,13 +638,44 @@ export function createPaintEngine({ buildScene, ground = DEFAULT_PAPER, LOOP_MS 
           }
 
           p.setup = () => {
-            // Retina/high-DPR phones otherwise render at 2-3x the pixel
-            // area for no visible gain on a soft painterly background —
-            // this is the single biggest perf lever for mobile.
-            p.pixelDensity(1);
+            // The reveal is a slow wash, not fast motion — 60fps buys
+            // nothing visible here but doubles CPU/GPU work. Cap it.
+            // (Safe before createCanvas: this only stores the target fps.)
+            p.frameRate(isMobile ? 24 : 30);
             sizeToContainer();
             const cnv = p.createCanvas(W, H, p.WEBGL);
             cnv.parent(containerRef.current);
+
+            // WEBGL antialiasing is the next biggest lever: it's invisible
+            // under the brush texture/noise this style already has, but
+            // costs a real multisample pass every frame.
+            //
+            // MUST run after createCanvas(): p5 auto-creates a 100x100 P2D
+            // canvas before setup(), and setAttributes() delegates to the
+            // *current* renderer's `_setAttributes()`, which only exists on
+            // RendererGL. Calling it any earlier throws
+            // "this._renderer._setAttributes is not a function" from setup(),
+            // which aborts the whole sketch: no WEBGL canvas is ever created,
+            // the timeline is never loaded and nothing is ever painted.
+            //
+            // It also re-creates the WebGL context + the canvas element, so
+            // everything that must land on the final context (pixelDensity
+            // below, the paint/buf graphics, the brush target) has to come
+            // after it. Note: the recreated canvas is re-attached to the
+            // instance's user node (our container) by p5 itself — do NOT call
+            // cnv.parent() again here, `cnv` still points at the old element.
+            p.setAttributes("antialias", false);
+
+            // Retina/high-DPR phones otherwise render at 2-3x the pixel
+            // area for no visible gain on a soft painterly background —
+            // this is the single biggest perf lever for mobile.
+            //
+            // Also has to run after createCanvas() (p5 sizes the main canvas
+            // to ceil(devicePixelRatio) regardless of earlier calls) and
+            // after setAttributes() (which resets the renderer to that same
+            // full DPR), otherwise this call is silently a no-op.
+            p.pixelDensity(1);
+
             ensureBrushes(brush, (3 * m) / 600);
             paint = p.createGraphics(W, H, p.WEBGL);
             buf = p.createGraphics(W, H, p.WEBGL);

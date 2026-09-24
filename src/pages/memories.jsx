@@ -57,7 +57,7 @@ export default function Memories() {
 
         <motion.div
           variants={fadeUp}
-          className="w-full max-w-3xl flex-1 min-h-[280px]"
+          className="w-full max-w-3xl flex-1 min-h-70"
         >
           <InfiniteSpiral
             items={images}
@@ -95,7 +95,7 @@ export default function Memories() {
             opacity: { duration: 1, delay: 1.1 },
             y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.1 },
           }}
-          className="pacifico pointer-events-none absolute left-6 top-24 hidden max-w-[10rem] -rotate-6 text-sm text-[#2c4a40]/60 sm:block"
+          className="pacifico pointer-events-none absolute left-6 top-24 hidden max-w-40 -rotate-6 text-sm text-[#2c4a40]/60 sm:block"
         >
           &ldquo;home isn&apos;t a place, it&apos;s you.&rdquo;
         </motion.p>
@@ -112,7 +112,7 @@ export default function Memories() {
               delay: 1.3,
             },
           }}
-          className="pacifico pointer-events-none absolute bottom-24 right-6 hidden max-w-[10rem] rotate-6 text-right text-sm text-[#2c4a40]/60 sm:block"
+          className="pacifico pointer-events-none absolute bottom-24 right-6 hidden max-w-40 rotate-6 text-right text-sm text-[#2c4a40]/60 sm:block"
         >
           &ldquo;every memory with you is my favorite one.&rdquo;
         </motion.p>

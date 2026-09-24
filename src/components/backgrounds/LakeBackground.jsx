@@ -155,7 +155,7 @@ function buildScene(W, H, m, h) {
     const cy0 = H * (0.92 + rr(0, 0.03));
     // low shoreline bank in the corner
     out.push(dBlob(cx0 + side * W * 0.05, H * 0.97, W * 0.24, H * 0.07, mixHex(foliage[2], washes[3], 0.4), 185, 0.5, 0.55, side * 0.12, 0.15, 360));
-    for (let i = 0; i < 13 + Math.round(dens * 8); i++) {
+    for (let i = 0; i < 9 + Math.round(dens * 6); i++) {
       const x0 = cx0 + rr(-W * 0.11, W * 0.09);
       const y0 = cy0 + rr(0, H * 0.02);
       const len = -H * rr(0.16, 0.34) * (0.45 + 0.55 * Math.pow(p.random(), 0.6));

@@ -96,7 +96,7 @@ function buildScene(W, H, m, h) {
 
   // grass strands growing outward from the path edges
   const tops = [];
-  for (let i = 0; i < Math.round((50 + dens * 110) * (0.35 + 0.65 * det)); i++) {
+  for (let i = 0; i < Math.round((32 + dens * 68) * (0.35 + 0.65 * det)); i++) {
     const side = i % 2 === 0 ? -1 : 1;
     const y0 = H * (0.34 + 0.7 * Math.pow(p.random(), 0.8));
     const near = (y0 - topY) / (H - topY);
