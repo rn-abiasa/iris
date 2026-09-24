@@ -5,8 +5,8 @@ import Stack from "../components/stack";
 import ReasonCard from "../components/reasonCard";
 import PhotoFrame from "../components/photoFrame";
 import Button from "../components/button";
-import img7 from "../assets/briliana.jpg";
-import img5 from "../assets/brln_bag.jpeg";
+import img7 from "../assets/7.jpg";
+import img5 from "../assets/5.webp";
 
 // TODO: ganti dengan alasan-alasan asli kamu — makin spesifik makin kena.
 const reasons = [

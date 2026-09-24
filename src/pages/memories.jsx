@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import LakeBackground from "../components/backgrounds/LakeBackground";
 import InfiniteSpiral from "../components/infiniteSpiral";
 import Button from "../components/button";
-import img1 from "../assets/1.webp";
 import img2 from "../assets/2.webp";
 import img3 from "../assets/3.webp";
 import img4 from "../assets/4.webp";
@@ -11,7 +10,6 @@ import img5 from "../assets/5.webp";
 import img6 from "../assets/6.webp";
 
 const images = [
-  { src: img1, alt: "Memory 1" },
   { src: img2, alt: "Memory 2" },
   { src: img3, alt: "Memory 3" },
   { src: img4, alt: "Memory 4" },
@@ -107,7 +105,12 @@ export default function Memories() {
           animate={{ opacity: 1, y: [0, 6, 0] }}
           transition={{
             opacity: { duration: 1, delay: 1.3 },
-            y: { duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1.3 },
+            y: {
+              duration: 5.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.3,
+            },
           }}
           className="pacifico pointer-events-none absolute bottom-24 right-6 hidden max-w-[10rem] rotate-6 text-right text-sm text-[#2c4a40]/60 sm:block"
         >

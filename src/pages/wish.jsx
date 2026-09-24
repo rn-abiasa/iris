@@ -7,7 +7,7 @@ import Button from "../components/button";
 
 // TODO: ganti dengan kalimat harapan yang benar-benar kamu mau ucapkan.
 const wishText =
-  "Semoga tahun ini membawa lebih banyak tawa, mimpi yang perlahan jadi nyata, dan aku yang selalu ada di sampingmu. Selamat ulang tahun, sayang. 🎂";
+  "Selamat ulang tahun, sayang. Semoga di usia barumu ini, kamu selalu dikelilingi kebahagiaan, kesehatan, dan hal-hal baik yang kamu deserve. Terima kasih sudah hadir dan menjadi bagian indah dalam hidupku. Semoga kita bisa terus tumbuh bersama, saling menemani, dan menciptakan banyak cerita baik ke depannya.";
 
 const CONFETTI_COLORS = ["#ffe9a8", "#f4a261", "#e0e0f0", "#cdb4db", "#ffffff"];
 
