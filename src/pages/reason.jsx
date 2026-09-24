@@ -5,7 +5,7 @@ import Stack from "../components/stack";
 import ReasonCard from "../components/reasonCard";
 import PhotoFrame from "../components/photoFrame";
 import Button from "../components/button";
-import img7 from "../assets/7.jpg";
+import img7 from "../assets/7.webp";
 import img5 from "../assets/5.webp";
 
 // TODO: ganti dengan alasan-alasan asli kamu — makin spesifik makin kena.

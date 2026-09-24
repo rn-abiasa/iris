@@ -4,9 +4,9 @@ import MountainBackground from "../components/backgrounds/MountainBackground";
 import Typewriter from "../components/typewriter";
 import PhotoFrame from "../components/photoFrame";
 import Button from "../components/button";
-import img7 from "../assets/7.jpg";
+import img7 from "../assets/7.webp";
 import img2 from "../assets/2.webp";
-import img8 from "../assets/8.jpg";
+import img8 from "../assets/8.webp";
 
 // TODO: ganti dengan pesan spesial yang benar-benar kamu mau sampaikan.
 const specialMessage = `Selamat ulang tahun, sayang. Di hari spesialmu ini, aku cuma ingin kamu tahu betapa bersyukurnya aku bisa mengenal dan menjalani banyak hal bersamamu. Terima kasih sudah menjadi seseorang yang selalu punya tempat istimewa di hidupku, untuk setiap cerita, tawa, dan bahkan hari-hari yang nggak selalu mudah. Semoga di usia barumu ini, kamu selalu dikelilingi hal-hal baik, diberi kesehatan, dan dipertemukan dengan banyak alasan untuk tersenyum.

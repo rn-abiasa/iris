@@ -75,11 +75,11 @@ export default function Cover() {
           </motion.div>
         </div>
 
-        <motion.div variants={fadeUp} className="mt-6 sm:mt-8">
+        <div className="mt-6 sm:mt-8">
           <Link to="/memories">
             <Button>PRESS ME</Button>
           </Link>
-        </motion.div>
+        </div>
       </motion.section>
     </main>
   );
