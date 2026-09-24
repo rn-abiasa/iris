@@ -1,4 +1,3 @@
-import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import LakeBackground from "../components/backgrounds/LakeBackground";
 import InfiniteSpiral from "../components/infiniteSpiral";
@@ -17,32 +16,20 @@ const images = [
   { src: img6, alt: "Memory 6" },
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.22, delayChildren: 0.15 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+// Delay stagger disamakan dengan framer-motion sebelumnya
+// (staggerChildren 0.22 / delayChildren 0.15, mengikuti urutan render).
+const stagger = (i) => ({
+  "--anim-delay": `${0.15 + i * 0.22}s`,
+  "--anim-from": "24px",
+});
 
 export default function Memories() {
   return (
     <main className="relative flex min-h-dvh flex-col overflow-x-hidden">
       <LakeBackground className="-z-10" />
 
-      <motion.section
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 flex flex-1 flex-col items-center gap-6 px-4 py-10 text-center sm:gap-8 sm:py-14"
-      >
-        <motion.div variants={fadeUp} className="space-y-1">
+      <section className="relative z-10 flex flex-1 flex-col items-center gap-6 px-4 py-10 text-center sm:gap-8 sm:py-14">
+        <div style={stagger(0)} className="anim-rise anim-run space-y-1">
           <p className="pacifico text-sm uppercase tracking-[0.3em] text-[#2c4a40]/70 sm:text-base">
             a little scroll through time
           </p>
@@ -53,11 +40,11 @@ export default function Memories() {
             &ldquo;Setiap foto ini adalah alasan kecil kenapa aku jatuh cinta
             berkali-kali sama kamu.&rdquo;
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={fadeUp}
-          className="w-full max-w-3xl flex-1 min-h-70"
+        <div
+          style={stagger(1)}
+          className="anim-rise anim-run w-full max-w-3xl flex-1 min-h-70"
         >
           <InfiniteSpiral
             items={images}
@@ -77,46 +64,30 @@ export default function Memories() {
             imageFit="cover"
             grayscale={0}
           />
-        </motion.div>
+        </div>
 
-        <motion.div variants={fadeUp} className="mt-1 sm:mt-2">
+        <div style={stagger(2)} className="anim-rise anim-run mt-1 sm:mt-2">
           <Link to="/message">
             <Button>NEXT</Button>
           </Link>
-        </motion.div>
+        </div>
 
         {/* decorative romantic quotes, corners only on larger screens so
-            they never crowd the gallery on small phones */}
-        <motion.p
+            they never crowd the gallery on small phones (drift + fade-nya
+            murni CSS lewat .quote-drift--up / .quote-drift--down) */}
+        <p
           aria-hidden="true"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: [0, -6, 0] }}
-          transition={{
-            opacity: { duration: 1, delay: 1.1 },
-            y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.1 },
-          }}
-          className="pacifico pointer-events-none absolute left-6 top-24 hidden max-w-40 -rotate-6 text-sm text-[#2c4a40]/60 sm:block"
+          className="quote-drift--up pacifico pointer-events-none absolute left-6 top-24 hidden max-w-40 -rotate-6 text-sm text-[#2c4a40]/60 sm:block"
         >
           &ldquo;home isn&apos;t a place, it&apos;s you.&rdquo;
-        </motion.p>
-        <motion.p
+        </p>
+        <p
           aria-hidden="true"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: [0, 6, 0] }}
-          transition={{
-            opacity: { duration: 1, delay: 1.3 },
-            y: {
-              duration: 5.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1.3,
-            },
-          }}
-          className="pacifico pointer-events-none absolute bottom-24 right-6 hidden max-w-40 rotate-6 text-right text-sm text-[#2c4a40]/60 sm:block"
+          className="quote-drift--down pacifico pointer-events-none absolute bottom-24 right-6 hidden max-w-40 rotate-6 text-right text-sm text-[#2c4a40]/60 sm:block"
         >
           &ldquo;every memory with you is my favorite one.&rdquo;
-        </motion.p>
-      </motion.section>
+        </p>
+      </section>
     </main>
   );
 }

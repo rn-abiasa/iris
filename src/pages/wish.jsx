@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { motion } from "motion/react";
 import confetti from "canvas-confetti";
 import DuskBackground from "../components/backgrounds/DuskBackground";
 import Typewriter from "../components/typewriter";
@@ -56,10 +55,9 @@ export default function Wish() {
     <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-x-hidden px-6 py-12 text-center">
       <DuskBackground className="-z-10" />
 
-      <motion.div
-        initial={{ opacity: 0, y: -18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      <div
+        style={{ "--anim-from": "-18px", "--anim-dur": "0.8s" }}
+        className="anim-rise anim-run"
       >
         <p className="pacifico text-sm uppercase tracking-[0.3em] text-[#fdf6e3]/80 sm:text-base">
           make a wish
@@ -67,7 +65,7 @@ export default function Wish() {
         <h1 className="yuyu text-3xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sm:text-5xl">
           Wish
         </h1>
-      </motion.div>
+      </div>
 
       <div className="mt-8 max-w-xl sm:mt-10">
         <Typewriter

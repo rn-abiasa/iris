@@ -1,8 +1,13 @@
-import { motion } from "motion/react";
+import useReveal from "../lib/useReveal";
 
 /**
  * A tilted polaroid-style photo with a little "tape" strip and a caption.
  * Straightens and lifts slightly on hover, drifts gently while idle.
+ *
+ * Animasinya murni CSS (lihat seksi "Animasi entrance / idle" di index.css):
+ * `.photo-frame` + `.anim-tilt-in` + class `anim-hold`/`is-revealed`
+ * menggantikan pasangan whileInView + whileHover, sementara `useReveal`
+ * hanya menandai kapan fotonya masuk viewport.
  */
 export default function PhotoFrame({
   src,
@@ -12,27 +17,27 @@ export default function PhotoFrame({
   delay = 0,
   className = "",
 }) {
+  const [revealRef, revealed] = useReveal({ amount: 0.4 });
+
   return (
-    <motion.figure
-      initial={{ opacity: 0, y: 26, rotate: rotate * 2.2 }}
-      whileInView={{ opacity: 1, y: 0, rotate }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
-      whileHover={{ rotate: 0, scale: 1.04, y: -4 }}
-      className={`relative w-36 select-none rounded-sm bg-white p-2.5 pb-5 shadow-xl sm:w-44 ${className}`}
+    <figure
+      ref={revealRef}
+      style={{
+        "--anim-rot": `${rotate}deg`,
+        "--anim-rot-from": `${rotate * 2.2}deg`,
+        "--anim-delay": `${delay}s`,
+      }}
+      className={`photo-frame anim-tilt-in ${
+        revealed ? "is-revealed" : "anim-hold"
+      } relative w-36 select-none rounded-sm bg-white p-2.5 pb-5 shadow-xl sm:w-44 ${className}`}
     >
-      <motion.span
+      <span
         aria-hidden="true"
-        animate={{
-          rotate: [
-            rotate > 0 ? 4 : -4,
-            rotate > 0 ? 1 : -1,
-            rotate > 0 ? 4 : -4,
-          ],
+        className="photo-frame__tape absolute -top-3 left-1/2 h-6 w-14 -translate-x-1/2 rounded-[2px] bg-white/70"
+        style={{
+          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+          "--tape-rot": `${rotate > 0 ? 4 : -4}deg`,
         }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-3 left-1/2 h-6 w-14 -translate-x-1/2 rounded-[2px] bg-white/70"
-        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }}
       />
       <img
         src={src}
@@ -45,6 +50,6 @@ export default function PhotoFrame({
           {caption}
         </figcaption>
       )}
-    </motion.figure>
+    </figure>
   );
 }

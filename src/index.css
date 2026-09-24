@@ -312,3 +312,278 @@
   object-fit: cover;
   pointer-events: none;
 }
+
+/* =========================================================================
+   Animasi entrance / idle — pengganti framer-motion, murni CSS keyframes.
+   -------------------------------------------------------------------------
+   Cara pakai:
+     • saat mount            → class varian + `anim-run`
+     • saat masuk viewport   → class varian + `anim-hold` selama belum
+       (padanan whileInView)  terlihat, lalu `is-revealed` saat elemen masuk
+                              viewport (ditandai src/lib/useReveal.js)
+   Semua keyframes berakhir di state natural elemen dan memakai
+   `animation-fill-mode: backwards`. Dengan begitu, saat delay berjalan
+   elemen masih di state "initial" seperti framer-motion, tapi setelah
+   animasi selesai nilai animasi tidak lagi menang di cascade — inilah yang
+   membuat :hover + transition (padanan whileHover) tetap hidup.
+   Nilai per-instance di-override lewat CSS variable inline, mis.
+   style={{ "--anim-delay": "0.4s", "--anim-from": "16px" }}.
+   ========================================================================= */
+
+/* ---- keyframes ---- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--anim-from, 24px), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--anim-from, 24px), 0);
+    scale: var(--anim-scale, 0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    scale: 1;
+  }
+}
+
+@keyframes tilt-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--anim-from, 26px), 0);
+    rotate: var(--anim-rot-from, 0deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    rotate: var(--anim-rot, 0deg);
+  }
+}
+
+@keyframes photo-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--anim-from, 20px), 0);
+    scale: 0.6;
+    rotate: -10deg;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    scale: 1;
+    rotate: var(--anim-rot, -4deg);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--anim-from, 36px), 0);
+    rotate: var(--card-tilt, 0deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    rotate: var(--card-tilt-half, 0deg);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 var(--float-y, -10px);
+  }
+}
+
+@keyframes float-rot {
+  0%,
+  100% {
+    rotate: -4deg;
+  }
+  50% {
+    rotate: -1deg;
+  }
+}
+
+@keyframes tape-rock {
+  0%,
+  100% {
+    rotate: var(--tape-rot, 4deg);
+  }
+  50% {
+    rotate: calc(var(--tape-rot, 4deg) * 0.25);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.08;
+  }
+}
+
+@keyframes note-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- varian: menentukan keyframes-nya ---- */
+.anim-rise {
+  --anim-name: rise-in;
+}
+
+.anim-pop {
+  --anim-name: pop-in;
+  --anim-scale: 0.85;
+}
+
+.anim-photo-in {
+  --anim-name: photo-in;
+}
+
+.anim-tilt-in {
+  --anim-name: tilt-in;
+}
+
+.anim-note-in {
+  --anim-name: tilt-in;
+  --anim-from: 20px;
+  --anim-rot: 6deg;
+  --anim-rot-from: 0deg;
+}
+
+/* ---- timing: animasi saat mount atau saat masuk viewport ---- */
+.anim-run,
+.is-revealed {
+  animation: var(--anim-name) var(--anim-dur, 0.85s)
+    var(--anim-ease, cubic-bezier(0.22, 1, 0.36, 1)) var(--anim-delay, 0s)
+    backwards;
+}
+
+
+/* ---- komponen: foto polaroid, kartu lagu, kutipan & foto cover ---- */
+
+/* wrapper foto cover: masuk seperti `photoIn` lalu tetap miring -4deg setelah
+   animasinya selesai (karena fill-mode-nya `backwards`, bukan `forwards`) */
+.cover-photo-wrap {
+  --anim-name: photo-in;
+  --anim-dur: 1s;
+  rotate: -4deg;
+}
+
+.photo-frame {
+  --anim-name: tilt-in;
+  --anim-from: 26px;
+  --anim-dur: 0.8s;
+  --anim-hold-rot: var(--anim-rot-from);
+  rotate: var(--anim-rot, 0deg);
+  transition:
+    rotate 0.3s ease-out,
+    scale 0.3s ease-out,
+    translate 0.3s ease-out;
+}
+
+.photo-frame__tape {
+  animation: tape-rock 6s ease-in-out infinite;
+}
+
+.music-card {
+  --anim-name: card-in;
+  --anim-from: 36px;
+  --anim-dur: 0.7s;
+  --anim-hold-rot: var(--card-tilt);
+  rotate: var(--card-tilt-half, 0deg);
+  transition:
+    rotate 0.3s ease-out,
+    scale 0.3s ease-out,
+    translate 0.3s ease-out;
+}
+
+.music-card__play {
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+
+.music-card__note--spin {
+  animation: note-spin 3s linear infinite;
+}
+
+.cover-photo {
+  animation:
+    float-y 4s ease-in-out infinite,
+    float-rot 5s ease-in-out infinite;
+}
+
+.quote-drift--up {
+  --float-y: -6px;
+  animation:
+    fade-in 1s ease-out 1.1s backwards,
+    float-y 5s ease-in-out 1.1s infinite;
+}
+
+.quote-drift--down {
+  --float-y: 6px;
+  animation:
+    fade-in 1s ease-out 1.3s backwards,
+    float-y 5.5s ease-in-out 1.3s infinite;
+}
+
+/* ---- state "belum masuk viewport" (padanan `initial`) ----
+   Sengaja ditaruh SETELAH rule komponen di atas: specificity-nya sama
+   (satu class), jadi urutan inilah yang membuat state tersembunyi menang
+   atas `rotate` milik .photo-frame / .music-card. */
+.anim-hold {
+  opacity: 0;
+  transform: translate3d(0, var(--anim-from, 24px), 0);
+  rotate: var(--anim-hold-rot, var(--anim-rot, 0deg));
+  scale: var(--anim-scale, 1);
+}
+
+/* ---- hover (padanan whileHover) ---- */
+.photo-frame:hover {
+  rotate: 0deg;
+  scale: 1.04;
+  translate: 0 -4px;
+}
+
+.music-card:hover {
+  rotate: 0deg;
+  scale: 1.02;
+  translate: 0 -4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-run,
+  .is-revealed,
+  .cover-photo,
+  .photo-frame__tape,
+  .music-card__play,
+  .music-card__note--spin,
+  .quote-drift--up,
+  .quote-drift--down {
+    animation: none;
+  }
+}
